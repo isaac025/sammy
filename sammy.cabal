@@ -1,0 +1,35 @@
+cabal-version:      >=1.10
+name:               sammy
+version:            0.1.0.0
+synopsis:           A Simple Assembler & Minimal Machine for You
+
+-- A longer description of the package.
+-- description:
+homepage:           https://github.com/isaac025/sammy
+
+-- A URL where users can report bugs.
+-- bug-reports:
+license:            GPL-2
+license-file:       LICENSE
+author:             Isaac Lopez
+maintainer:         isaac.lopez@upr.edu
+
+-- A copyright notice.
+-- copyright:
+-- category:
+build-type:         Simple
+extra-source-files: CHANGELOG.md
+
+executable sammy
+    main-is:          Main.hs
+
+    -- Modules included in this executable, other than Main.
+    -- other-modules:
+
+    -- LANGUAGE extensions used by modules in this package.
+    -- other-extensions:
+    build-depends:    base >=4.14 && <4.15
+                    , vector
+                    , transformers
+    hs-source-dirs:   src
+    default-language: Haskell2010
