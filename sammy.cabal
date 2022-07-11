@@ -24,12 +24,14 @@ executable sammy
     main-is:          Main.hs
 
     -- Modules included in this executable, other than Main.
-    -- other-modules:
+    other-modules:    Reader
 
     -- LANGUAGE extensions used by modules in this package.
     -- other-extensions:
+    ghc-options:      -Wall
     build-depends:    base >=4.14 && <4.15
                     , vector
-                    , transformers
+                    , QuickCheck
+                    , freer
     hs-source-dirs:   src
     default-language: Haskell2010
