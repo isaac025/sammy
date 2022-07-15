@@ -3,7 +3,6 @@ module VM where
 import System.IO (hSetBuffering, stdin, stdout, BufferMode(..))
 import System.Environment (getArgs)
 import Data.Word (Word8)
-import Control.Monad.Freer
 
 {- Four Mutable Things:
  - 1. Location Counter

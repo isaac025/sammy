@@ -15,7 +15,7 @@ type OpCode     = String
 type Operand    = String
 type Label      = String
 
-data Asm = Asm { accumulator :: IORef Int }
+newtype Asm = Asm { accumulator :: IORef Int }
 
 opcodes :: [String]
 opcodes = [ "HLT" -- STOP
@@ -54,14 +54,14 @@ printInstr "OUT" = putStrLn "Output"
 printInstr "CLA" = putStrLn "Clear accumulator"
 printInstr x = putStrLn x
 
-maybeRead :: (Read Int) => String -> Maybe Int
+maybeRead :: String -> Maybe Int
 maybeRead s = case reads s of
     [(x, "")] -> Just x
     _         -> Nothing
 
 go []       = pure $ exitSuccess
 go (x:xs)   = case x of 
-    WithLabel l b      -> go xs
+    WithLabel l _      -> go xs
 
     WithOperand opc op -> case any (== opc) opcodes of
         True    -> case maybeRead op of
