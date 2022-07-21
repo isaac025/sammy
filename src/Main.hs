@@ -3,19 +3,15 @@
 module Main where
 
 import System.Environment (getArgs)
-import System.Exit (exitSuccess)
 import Data.Word (Word8)
 import Data.IORef
-import Control.Monad.IO.Class (liftIO)
-import Reader
-
-type Actual = Word8
+import VMPrinter (runPrompt)
 
 type OpCode     = String
 type Operand    = String
 type Label      = String
 
-newtype Asm = Asm { accumulator :: IORef Int }
+newtype Asm = Asm { accumulator :: IORef Word8 }
 
 opcodes :: [String]
 opcodes = [ "HLT" -- STOP
@@ -54,42 +50,13 @@ printInstr "OUT" = putStrLn "Output"
 printInstr "CLA" = putStrLn "Clear accumulator"
 printInstr x = putStrLn x
 
-maybeRead :: String -> Maybe Int
-maybeRead s = case reads s of
-    [(x, "")] -> Just x
-    _         -> Nothing
-
-go []       = pure $ exitSuccess
-go (x:xs)   = case x of 
-    WithLabel l _      -> go xs
-
-    WithOperand opc op -> case any (== opc) opcodes of
-        True    -> case maybeRead op of
-            Just x -> do ac <- asks accumulator
-                         liftIO $ modifyIORef ac (+x)
-                         go xs
-            Nothing -> go xs
-        False   -> error "INSTRUCTION NOT SUPPORTED"
-
-    WithoutOperand opc -> case any (== opc) opcodes of
-        True    -> go xs
-        False   -> error "INSTRUCTION NOT SUPPORTED"
-    
 parseFile :: String -> [ByteCode]
-parseFile args = map toByteCode $ map words $ lines args
-
-{-
- - State
- -
--}
+parseFile args = map (toByteCode . words) $ lines args
 
 main :: IO ()
 main = do args <- getArgs
           accu <- newIORef 0
           let asm = Asm { accumulator = accu }
-          case (length args) == 0 of
-            True    -> putStrLn "Usage samasm: [FILE]"
-            False   -> do contents <- readFile (head args)
-                          runReader (go $ parseFile contents) asm
-                          accu' <- readIORef accu
-                          print accu'
+          if null args then runPrompt
+          else  do contents <- readFile (head args)
+                   print "Something"

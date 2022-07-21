@@ -1,11 +1,20 @@
-module Instruction where
+module Instructions where
 
 import Data.Word (Word8)
+import Data.IORef
 
 type Addr           = Word8
 type Val            = Word8    
 type Op             = Word8
-type Accumulator    = IORef Val
+
+newtype Accumulator = Accumulator { acc :: IORef Word8
+                                  } 
+
+newtype Memory = Memory { mem :: [Word8]
+                        } 
+
+initializeMemory :: Memory
+initializeMemory = Memory $ replicate 256 (0x0 :: Word8)
 
 data Mnemonic = HLT -- STOP
               | LOD -- Load Acc from Mem Location
@@ -18,8 +27,6 @@ data Mnemonic = HLT -- STOP
               | OUT -- Output the next character (from Acc)
               | CLA -- Set Acc to 0
               deriving (Show, Eq, Bounded, Enum)
-
---newtype Memory = Memory { mem :: Vector Word8 } 
 
 -- Operations
 lod :: Val -> Val -> Val
@@ -51,5 +58,4 @@ cla acu = undefined -- set acu to 0 (clear acu)
 
 hlt :: ()
 hlt = undefined -- halt the program
-
 

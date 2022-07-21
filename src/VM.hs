@@ -1,33 +1,25 @@
 module VM where
 
-import System.IO (hSetBuffering, stdin, stdout, BufferMode(..))
-import System.Environment (getArgs)
 import Data.Word (Word8)
+import Data.IORef
+import Text.Printf (printf)
+import Data.Bits ((.&.), shiftR)
 
-{- Four Mutable Things:
- - 1. Location Counter
- - 2. Accumulator Register
- - 3. Memory
- - 4. Symbol Table
--}
+type Addr   = Word8
+type Val    = Word8
 
-runPrompt :: IO ()
-runPrompt = do putStr "SAMMY> "
-               ln <- getLine
-               (putStrLn ln) >> runPrompt
+newtype Accumulator = Accumulator { acc :: IORef Word8 
+                                  } 
 
+newtype Memory = Memory { mem :: [Word8]
+                        }
 
+x :: Word8
+x = 0x2A
 
-menuTable :: [(String, String)]
-menuTable = [ ("help", "Display help menu")
-            , ("pacc", "Print accumulator register")
-            , ("pmem", "Print memory location contents")
-            , ("quit", "Quit the virtual machine")
-            ]
+--The last 3 bits of the integer are:
+f = x .&. 0x7
 
-help :: IO ()
-help = do putStrLn "Possible commands are:\n"
-          mapM_ (\x -> putStrLn ((fst x) ++ "\t\t" ++ (snd x))) menuTable 
-
-
+--The five bits starting from the eight-last bit are:
+f' = x `shiftR` 3    -- all but the last three bits .&.  0x1F -- the last five bits.
 
